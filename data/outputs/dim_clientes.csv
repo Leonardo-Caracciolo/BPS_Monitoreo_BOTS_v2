@@ -1,0 +1,63 @@
+﻿ID_Cliente,cuit,nombre_cliente,gerente_responsable,cuit_es_dummy
+1,30717579360,Spotify,Gabriel Alvarado,False
+2,30702022165,Verizon,Gabriel Alvarado,False
+3,30686513072,PPG,Gabriel Alvarado,False
+5,30515772819,INDUNOR,Gabriel Alvarado,False
+6,30618725320,Cerro Vanguardia,Gabriel Alvarado,False
+7,30717072231,Kyndryl,Gabriel Alvarado,False
+8,30700869918,Bunge,Gabriel Alvarado,False
+9,30584688455,Copetro,Gabriel Alvarado,False
+10,30661921966,Origenes Afjp,Gabriel Alvarado,False
+11,30716994550,FUNDACION TGS,Belen Chaves,False
+12,30707567607,GAS LINK S.A,Belen Chaves,False
+13,30707570144,MAGNETI MARELLI CONJ.DE ESCAPE S.A,Belen Chaves,False
+14,30707570136,MAGNETI MARELLI REPUESTOS S.A,Belen Chaves,False
+15,30698406344,TELCOSUR S.A,Belen Chaves,False
+16,30657862068,TRANSPORTADORA DE GAS DEL SUR S.A,Belen Chaves,False
+17,30715629611,ULTRAGENYX ARGENTINA S.R.L,Belen Chaves,False
+18,00000000001,INDUSTRIAS LEAR DE ARGENTINA S.R.L.,Virginia Fasolis,True
+19,00000000002,AUTH0,Virginia Fasolis,True
+20,00000000003,adidas Argentina S.A.,Virginia Fasolis,True
+21,00000000004,Reebok Argentina SA,Virginia Fasolis,True
+22,30712132554,Facebook Argentina,Nicolas Mendez,False
+23,30714604356,Edge Argentina,Nicolas Mendez,False
+24,30716198355,Akamai Argentina,Nicolas Mendez,False
+25,30688415531,Maersk Line Argentina,Nicolas Mendez,False
+26,30572530996,Delaval,Nicolas Mendez,False
+27,00000000005,EUROP,Mariana Sindas,True
+28,00000000006,BRITISH COUNCIL,Mariana Sindas,True
+29,00000000007,BIOGEN,Mariana Sindas,True
+30,00000000008,SHPP,Mariana Sindas,True
+31,00000000009,SONY,Mariana Sindas,True
+32,00000000010,HP,Mariana Sindas,True
+33,00000000011,LINKEDTORE,Mariana Sindas,True
+34,00000000012,VERTIV,Mariana Sindas,True
+35,00000000013,OSIDOFT,Mariana Sindas,True
+36,00000000014,LINKEDSTORE,Mariana Sindas,True
+37,00000000015,ABBVIE S.A.,Ali Facundo,True
+38,00000000016,JOHNSON & JOHNSON MEDICAL S.A.,Ali Facundo,True
+39,00000000017,BIOMARIN ARGENTINA SRL,Ali Facundo,True
+40,00000000018,INLAND SERVICES SA,Ali Facundo,True
+41,00000000019,SVITZER ARGENTINA S.A.U.,Ali Facundo,True
+42,00000000020,ADVANCED STERILIZATION PRODUCTS S.A.S.,Ali Facundo,True
+43,00000000021,JANSSEN CILAG FARMACEUTICA S.A.,Ali Facundo,True
+44,00000000022,J&J Argentina S.A.,Ali Facundo,True
+45,00000000023,IGT ARGENTINA SA,Ali Facundo,True
+46,00000000024,INGREDION ARGENTINA SA,Ali Facundo,True
+47,00000000025,Munchener de Argentina Servicios Tecnicos SRL (MA),Ali Facundo,True
+48,00000000201,SUPER MOVISTAR S.R.L.,Oven Pereyra,False
+49,123213,asdsad,asdsaddsa,False
+50,00000003301,asas,Oven Pereyra,False
+51,00000033002,Claro,Amiel Capoletini,False
+52,00000110302,Fibertel,Leonardo zasinipolis,False
+53,20404689512,pepe santillan,GERENTE EJEMPLO,False
+54,201584650,pepe ejemplo 2,GERENTE EJEMPLO 2,False
+55,202651473,PEPE 3,GERENTE 3,False
+57,203654197,CLIENTE 5,GERENTE 5,False
+58,206514710,CLIENTE 6,GERENTE 6,False
+59,202354810,CLIENTE 7,GERENTE 7,False
+60,278945617,CLIENTE 8,GERENTE 7,False
+61,289563212,CLIENTE 8,GERENTE 8,False
+62,201547469,CLIENTE 9,GERENTE 9,False
+63,208989998,CLIENTE 10,GERENTE 10,False
+64,258589631,CLIENTE 11,GERENTE 11,False

@@ -1,0 +1,226 @@
+<mxfile host="app.diagrams.net" version="21.0.0">
+  <diagram name="BPS Monitoreo Bots - Alto Nivel" id="bps_highlevel">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="1">
+      <root>
+        <mxCell id="0" /><mxCell id="1" parent="0" />
+
+        <!-- TÍTULO -->
+        <mxCell id="title" value="&lt;b style='font-size:16px'&gt;BPS Monitoreo Bots — Flujo ETL (Alto Nivel)&lt;/b&gt;"
+          style="text;html=1;fillColor=#1F4E79;fontColor=#ffffff;strokeColor=none;align=center;rounded=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="20" width="1340" height="44" as="geometry"/>
+        </mxCell>
+
+        <!-- ══ FUENTES ══ -->
+        <mxCell id="lbl1" value="FUENTES"
+          style="text;html=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=10;fontColor=#1F4E79;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="88" width="120" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- DB_Server -->
+        <mxCell id="db" value="&lt;b style='font-size:13px'&gt;📄 DB_Server.xlsx&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#555'&gt;Ejecuciones reales de bots&lt;br&gt;30.881 registros&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="116" width="240" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Relevamiento -->
+        <mxCell id="relev" value="&lt;b style='font-size:13px'&gt;📊 Relevamiento BPS.xlsm&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#555'&gt;Clientes + herramientas asignadas&lt;br&gt;47 clientes · 517 filas&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="216" width="240" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Tabla Cuits auxiliar -->
+        <mxCell id="cuits" value="&lt;b style='font-size:13px'&gt;📄 Tabla_Cuits.xlsx&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#888'&gt;Auxiliar: lookup nombre → CUIT&lt;br&gt;9.249 registros&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;verticalAlign=middle;dashed=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="316" width="240" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- ══ PIPELINE ══ -->
+        <mxCell id="lbl2" value="PIPELINE PYTHON"
+          style="text;html=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=10;fontColor=#375623;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="370" y="88" width="480" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Paso 1 -->
+        <mxCell id="p1" value="&lt;b style='font-size:12px;color:#375623'&gt;PASO 1&lt;/b&gt;&lt;br&gt;&lt;b style='font-size:11px'&gt;Leer Relevamiento&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#555'&gt;Join sheets · Limpiar CUITs&lt;br&gt;Deduplicar clientes&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="370" y="186" width="200" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Paso 2 -->
+        <mxCell id="p2" value="&lt;b style='font-size:12px;color:#375623'&gt;PASO 2&lt;/b&gt;&lt;br&gt;&lt;b style='font-size:11px'&gt;Leer y clasificar DB_Server&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#555'&gt;Normalizar variantes cliente&lt;br&gt;Clasificar: CUIT / NOMBRE / VACÍO&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="590" y="116" width="200" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Paso 3 -->
+        <mxCell id="p3" value="&lt;b style='font-size:12px;color:#375623'&gt;PASO 3&lt;/b&gt;&lt;br&gt;&lt;b style='font-size:11px'&gt;Construir fact_ejecuciones&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#555'&gt;Mapear procesos → herramientas&lt;br&gt;Normalizar estados · Join clientes&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="590" y="226" width="200" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Paso 4 -->
+        <mxCell id="p4" value="&lt;b style='font-size:12px;color:#375623'&gt;PASO 4&lt;/b&gt;&lt;br&gt;&lt;b style='font-size:11px'&gt;Exportar CSVs&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#555'&gt;4 tablas listas para Power BI&lt;br&gt;Encoding UTF-8-sig&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="590" y="336" width="200" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- ══ OUTPUTS ══ -->
+        <mxCell id="lbl3" value="OUTPUTS (data/outputs/)"
+          style="text;html=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=10;fontColor=#4a235a;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="880" y="88" width="220" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="o1" value="dim_clientes.csv&lt;br&gt;&lt;span style='font-size:10px;color:#555'&gt;46 filas&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="880" y="116" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="o2" value="dim_herramientas.csv&lt;br&gt;&lt;span style='font-size:10px;color:#555'&gt;26 filas&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="880" y="180" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="o3" value="dim_relevamiento.csv&lt;br&gt;&lt;span style='font-size:10px;color:#555'&gt;517 filas&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="880" y="244" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="o4" value="fact_ejecuciones.csv&lt;br&gt;&lt;span style='font-size:10px;color:#555'&gt;30.881 filas · tabla de hechos&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="880" y="308" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- ══ POWER BI ══ -->
+        <mxCell id="lbl4" value="POWER BI"
+          style="text;html=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=10;fontColor=#b85450;align=center;"
+          vertex="1" parent="1">
+          <mxGeometry x="1170" y="88" width="180" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="pbi" value="&lt;b style='font-size:14px'&gt;📊 Power BI&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#555'&gt;Modelo estrella&lt;br&gt;2 relaciones M:1 Single&lt;br&gt;Dashboard interactivo&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;verticalAlign=middle;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="1170" y="190" width="200" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- Nota futura SQL -->
+        <mxCell id="sql_note" value="&lt;b style='color:#1F4E79'&gt;🔮 Próximo paso&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px;color:#555'&gt;Reemplazar DB_Server.xlsx&lt;br&gt;por tabla SQL monitoreo_bots&lt;br&gt;El pipeline no cambia&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;dashed=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="430" width="240" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- ══ FLECHAS ══ -->
+
+        <!-- DB_Server → Paso 2 -->
+        <mxCell id="a1" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#6c8ebf;strokeWidth=2;rounded=1;"
+          edge="1" source="db" target="p2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Relevamiento → Paso 1 -->
+        <mxCell id="a2" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#6c8ebf;strokeWidth=2;rounded=1;"
+          edge="1" source="relev" target="p1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Tabla_Cuits → Paso 2 (auxiliar) -->
+        <mxCell id="a3" value="auxiliar"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#d6b656;strokeWidth=1.5;dashed=1;fontSize=9;rounded=1;"
+          edge="1" source="cuits" target="p2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Paso 1 → Paso 3 -->
+        <mxCell id="a4" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#82b366;strokeWidth=2;rounded=1;"
+          edge="1" source="p1" target="p3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Paso 2 → Paso 3 -->
+        <mxCell id="a5" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#82b366;strokeWidth=2;rounded=1;"
+          edge="1" source="p2" target="p3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Paso 3 → Paso 4 -->
+        <mxCell id="a6" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#82b366;strokeWidth=2;rounded=1;"
+          edge="1" source="p3" target="p4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Paso 4 → Outputs -->
+        <mxCell id="a7" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#9673a6;strokeWidth=2;rounded=1;"
+          edge="1" source="p4" target="o1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a8" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#9673a6;strokeWidth=2;rounded=1;"
+          edge="1" source="p4" target="o2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a9" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#9673a6;strokeWidth=2;rounded=1;"
+          edge="1" source="p4" target="o3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a10" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#9673a6;strokeWidth=2;rounded=1;"
+          edge="1" source="p4" target="o4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Outputs → Power BI -->
+        <mxCell id="a11" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#b85450;strokeWidth=2;rounded=1;"
+          edge="1" source="o1" target="pbi" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a12" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#b85450;strokeWidth=2;rounded=1;"
+          edge="1" source="o2" target="pbi" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a13" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#b85450;strokeWidth=2;rounded=1;"
+          edge="1" source="o3" target="pbi" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a14" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#b85450;strokeWidth=2;rounded=1;"
+          edge="1" source="o4" target="pbi" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- SQL note → DB (futuro) -->
+        <mxCell id="a15" value="reemplaza"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#6c8ebf;strokeWidth=1.5;dashed=1;fontSize=9;rounded=1;"
+          edge="1" source="sql_note" target="db" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

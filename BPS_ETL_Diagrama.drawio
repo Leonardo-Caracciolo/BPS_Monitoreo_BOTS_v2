@@ -1,0 +1,450 @@
+<mxfile host="app.diagrams.net" modified="2026-03-19T00:00:00.000Z" agent="Claude" version="21.0.0">
+  <diagram name="BPS Monitoreo Bots - Flujo ETL" id="bps_etl_flow">
+    <mxGraphModel dx="1500" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="2600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ══════════════════════════════════════════════════════ -->
+        <!-- TÍTULO                                                  -->
+        <!-- ══════════════════════════════════════════════════════ -->
+        <mxCell id="title" value="&lt;b style='font-size:15px'&gt;BPS Monitoreo Bots — Diagrama de Flujo ETL&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#cce4ff'&gt;Excel (hoy) → Pipeline Python → Power BI &amp;nbsp;|&amp;nbsp; Futuro: SQL monitoreo_bots → mismo pipeline&lt;/span&gt;"
+          style="text;html=1;strokeColor=none;fillColor=#1F4E79;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="20" width="1840" height="54" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════ -->
+        <!-- SECCIÓN 1: FUENTES DE DATOS                            -->
+        <!-- ══════════════════════════════════════════════════════ -->
+        <mxCell id="lbl_s1" value="① FUENTES DE DATOS"
+          style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontStyle=1;fontColor=#1F4E79;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="94" width="220" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- DB_Server.xlsx -->
+        <mxCell id="src_db" value="&lt;b style='font-size:12px;color:#1F4E79'&gt;📄 DB_Server.xlsx&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:9px;color:#666'&gt;Sheet: Tabla Monitoreos — 30.881 filas&lt;/i&gt;&lt;br&gt;&lt;hr style='border:0;border-top:1px solid #6c8ebf;margin:4px 0'&gt;&lt;table style='font-size:10px;width:100%'&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;id&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;INT (PK)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;username&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;VARCHAR — operador&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;proceso&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;VARCHAR — nombre del bot&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;estado&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;VARCHAR — resultado&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;iniciado&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;DATETIME&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;finalizado&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;DATETIME&lt;/td&gt;&lt;/tr&gt;&lt;tr style='background:#fff0f0'&gt;&lt;td&gt;&lt;b style='color:#c00'&gt;cliente&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#c00'&gt;VARCHAR ⚠ 3 formatos&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;items_count&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;INT (nullable)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;observaciones&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;TEXT (nullable)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingBottom=6;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="118" width="340" height="270" as="geometry" />
+        </mxCell>
+
+        <!-- Alerta campo cliente -->
+        <mxCell id="warn_cliente" value="&lt;b style='color:#b85450'&gt;⚠ campo &quot;cliente&quot; — 3 formatos:&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;• &lt;b&gt;CUIT numérico&lt;/b&gt; (10-11 dígitos): 203 filas (0.7%)&lt;br&gt;• &lt;b&gt;NOMBRE libre&lt;/b&gt; con errores ortográficos: 13.661 filas (44.2%)&lt;br&gt;&lt;i&gt;ej: SPOTIFY / Spotify / SPOTIFY ARGENTINA S.A&lt;/i&gt;&lt;br&gt;• &lt;b&gt;VACÍO&lt;/b&gt; o &quot;No definido&quot;: 17.017 filas (55.1%)&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;b style='color:#1F4E79'&gt;→ De ahora en adelante solo ingresa CUIT&lt;/b&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="380" y="118" width="320" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- Tabla_Cuits.xlsx (auxiliar) -->
+        <mxCell id="src_cuits" value="&lt;b style='font-size:11px;color:#7d4b00'&gt;📄 Tabla_Cuits.xlsx&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:9px;color:#666'&gt;Auxiliar — 9.249 filas&lt;/i&gt;&lt;br&gt;&lt;hr style='border:0;border-top:1px solid #d6b656;margin:4px 0'&gt;&lt;span style='font-size:10px'&gt;&lt;b&gt;no_cliente&lt;/b&gt; — INT&lt;br&gt;&lt;b&gt;razon_social&lt;/b&gt; — VARCHAR&lt;br&gt;&lt;b&gt;RFC / Cuit&lt;/b&gt; — VARCHAR (nullable)&lt;/span&gt;&lt;br&gt;&lt;br&gt;&lt;i style='font-size:9px;color:#888'&gt;Usada para resolver nombres históricos → CUIT. Solo 20 de 476 nombres únicos resueltos.&lt;/i&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;"
+          vertex="1" parent="1">
+          <mxGeometry x="380" y="300" width="320" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- Relevamiento container -->
+        <mxCell id="src_relev_bg" value="&lt;b style='font-size:11px;color:#1F4E79'&gt;📊 Relevamiento_BPS_Organizado_v2.xlsm&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:9px;color:#666'&gt;2 sheets que se deben unir por ID_Cliente&lt;/i&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;align=left;spacingLeft=8;spacingTop=6;"
+          vertex="1" parent="1">
+          <mxGeometry x="720" y="118" width="1150" height="270" as="geometry" />
+        </mxCell>
+
+        <!-- Sheet Clientes -->
+        <mxCell id="src_clientes_sheet" value="&lt;b style='font-size:11px;color:#1F4E79'&gt;Sheet: Clientes — 47 filas&lt;/b&gt;&lt;br&gt;&lt;hr style='border:0;border-top:1px solid #6c8ebf;margin:4px 0'&gt;&lt;table style='font-size:10px;width:100%'&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;ID_Cliente&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;INT (PK)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Cliente&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;VARCHAR — nombre&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Cuit&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;VARCHAR — con guiones&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Gerente responsable&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;VARCHAR&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;br&gt;&lt;i style='font-size:9px;color:#888'&gt;25 de 47 clientes tienen CUIT placeholder (000000000X). Pendiente de actualizar.&lt;/i&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FB;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;"
+          vertex="1" parent="1">
+          <mxGeometry x="730" y="155" width="430" height="220" as="geometry" />
+        </mxCell>
+
+        <!-- Sheet Uso de herramientas -->
+        <mxCell id="src_uso_sheet" value="&lt;b style='font-size:11px;color:#1F4E79'&gt;Sheet: Uso de herramientas — 517 filas&lt;/b&gt;&lt;br&gt;&lt;hr style='border:0;border-top:1px solid #6c8ebf;margin:4px 0'&gt;&lt;table style='font-size:10px;width:100%'&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;ID_Cliente&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;INT (FK → Clientes)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Cliente&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;VARCHAR — nombre&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Herramienta&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;VARCHAR — 11 valores únicos&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Usa Herramienta&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;VARCHAR (SI / NO / null)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Gerente responsable&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#555'&gt;VARCHAR&lt;/td&gt;&lt;/tr&gt;&lt;tr style='background:#fff0f0'&gt;&lt;td&gt;&lt;b style='color:#c00'&gt;Cuit&lt;/b&gt;&lt;/td&gt;&lt;td style='color:#c00'&gt;⚠ columna ausente — debe venir de sheet Clientes&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FB;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;"
+          vertex="1" parent="1">
+          <mxGeometry x="1180" y="155" width="470" height="220" as="geometry" />
+        </mxCell>
+
+        <!-- Flecha entre sheets -->
+        <mxCell id="arr_sheets" value="JOIN por ID_Cliente&lt;br&gt;agrega Cuit a&lt;br&gt;Uso de herramientas"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;"
+          edge="1" source="src_clientes_sheet" target="src_uso_sheet" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════ -->
+        <!-- SECCIÓN 2: TRANSFORMACIONES (PASO 1 + PASO 2)          -->
+        <!-- ══════════════════════════════════════════════════════ -->
+        <mxCell id="lbl_s2" value="② TRANSFORMACIONES — Pipeline Python (main.py)"
+          style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontStyle=1;fontColor=#375623;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="418" width="400" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- PASO 2 BOX -->
+        <mxCell id="paso2_bg" value="&lt;b style='font-size:12px;color:#375623'&gt;PASO 2 — Leer y clasificar DB_Server&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:9px;color:#666'&gt;core/etl/paso2_db_server.py&lt;/i&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;align=left;spacingLeft=8;spacingTop=6;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="442" width="660" height="400" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 2: regla 1 - variantes -->
+        <mxCell id="p2_r1" value="&lt;b style='color:#7d4b00'&gt;Regla 1 — Normalización de variantes&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;Aplica tabla CLIENTE_VARIANTES (config/settings.py)&lt;br&gt;61 entradas → 27 nombres canónicos&lt;br&gt;&lt;i&gt;Ej: &quot;SPOTIFY ARGENTINA S.A&quot; / &quot;Spotify&quot; → &quot;SPOTIFY&quot;&lt;br&gt;&quot;ExxonMobil&quot; / &quot;Exxonmobil&quot; → &quot;EXXONMOBIL&quot;&lt;br&gt;&quot;J&amp;amp;J ARGENTINA S.A&quot; / &quot;J&amp;amp;J&quot; → &quot;J&amp;amp;J&quot;&lt;/i&gt;&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="490" width="620" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 2: regla 2 - clasificacion -->
+        <mxCell id="p2_r2" value="&lt;b style='color:#375623'&gt;Regla 2 — Clasificación del campo cliente&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;&lt;b style='color:#006600'&gt;→ CUIT:&lt;/b&gt; regex ^\d{10,11}$ — 203 filas (0.7%)&lt;br&gt;&lt;b style='color:#cc6600'&gt;→ NOMBRE:&lt;/b&gt; texto libre — 13.661 filas (44.2%) — se muestra tal cual en dashboard&lt;br&gt;&lt;b style='color:#cc0000'&gt;→ VACIO:&lt;/b&gt; null / &quot;No definido&quot; — 17.017 filas (55.1%) — dato histórico sin cliente&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FB;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="612" width="620" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 2: regla 3 - lookup -->
+        <mxCell id="p2_r3" value="&lt;b style='color:#375623'&gt;Regla 3 — Lookup CUIT para registros NOMBRE&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;Busca &lt;i&gt;cliente_norm.upper()&lt;/i&gt; en Tabla_Cuits[razon_social]&lt;br&gt;Si encuentra → cuit_cliente resuelto&lt;br&gt;Si no encuentra → cuit_cliente = &quot;&quot; (vacío) · nombre mostrado tal cual&lt;br&gt;&lt;i style='color:#888'&gt;Solo 20 de 476 nombres únicos se resuelven por esta vía&lt;/i&gt;&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FB;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="714" width="620" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 2: calculos -->
+        <mxCell id="p2_r4" value="&lt;b style='color:#375623'&gt;Cálculos adicionales&lt;/b&gt;&lt;span style='font-size:10px'&gt; — duracion_segundos = finalizado − iniciado (clip ≥ 0) &amp;nbsp;|&amp;nbsp; anio / mes / semana extraídos de iniciado&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=middle;spacingLeft=8;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="816" width="620" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- PASO 1 BOX -->
+        <mxCell id="paso1_bg" value="&lt;b style='font-size:12px;color:#375623'&gt;PASO 1 — Leer Relevamiento BPS&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:9px;color:#666'&gt;core/etl/paso1_relevamiento.py&lt;/i&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;align=left;spacingLeft=8;spacingTop=6;"
+          vertex="1" parent="1">
+          <mxGeometry x="720" y="442" width="1150" height="400" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 1: regla join -->
+        <mxCell id="p1_r1" value="&lt;b style='color:#7d4b00'&gt;Regla 1 — Join interno entre sheets&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;df_uso.join(df_clientes[['ID_Cliente','Cuit','Gerente']], on='ID_Cliente', how='left')&lt;br&gt;Agrega columna Cuit a Uso de herramientas (era la columna faltante)&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="740" y="490" width="1110" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 1: regla limpieza CUIT -->
+        <mxCell id="p1_r2" value="&lt;b style='color:#375623'&gt;Regla 2 — Limpieza de CUIT&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;str.replace('-','').replace(' ','').strip() → quita guiones y espacios&lt;br&gt;&lt;i&gt;Ej: &quot;30-71757936-0&quot; → &quot;30717579360&quot;&lt;/i&gt;&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FB;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="740" y="572" width="520" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 1: regla cuit dummy -->
+        <mxCell id="p1_r3" value="&lt;b style='color:#375623'&gt;Regla 3 — Detección CUIT dummy&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;Flag cuit_es_dummy = True si int(cuit) &amp;lt; 100&lt;br&gt;25 de 47 clientes tienen placeholder (000000000X)&lt;br&gt;&lt;i style='color:#c00'&gt;Pendiente: actualizar CUITs reales en Relevamiento&lt;/i&gt;&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="1280" y="572" width="570" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 1: regla dedup -->
+        <mxCell id="p1_r4" value="&lt;b style='color:#375623'&gt;Regla 4 — Deduplicación dim_clientes&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;drop_duplicates(subset=['ID_Cliente']) luego drop_duplicates(subset=['cuit'], keep='first')&lt;br&gt;&lt;i&gt;Resuelve: Spotify aparecía 2 veces con mismo CUIT (ID 1 y 4) → 47 filas a 46&lt;/i&gt;&lt;br&gt;&lt;b&gt;Requerido por Power BI: cuit debe ser único en dim_clientes (One side)&lt;/b&gt;&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FB;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="740" y="664" width="1110" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 1: normalize herramienta -->
+        <mxCell id="p1_r5" value="&lt;b style='color:#375623'&gt;Regla 5 — Normalización de herramienta&lt;/b&gt;&lt;span style='font-size:10px'&gt; — str.strip().replace(r'\s+', ' ') colapsa espacios dobles en nombres de herramienta&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=middle;spacingLeft=8;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="740" y="756" width="1110" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════ -->
+        <!-- OUTPUTS INTERMEDIOS                                     -->
+        <!-- ══════════════════════════════════════════════════════ -->
+        <mxCell id="lbl_inter" value="Salidas intermedias de PASO 1 y PASO 2"
+          style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontStyle=2;fontColor=#555;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="868" width="300" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- df_db intermedio -->
+        <mxCell id="inter_db" value="&lt;b style='font-size:10px'&gt;df_db clasificado&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:9px;color:#555'&gt;30.881 filas&lt;br&gt;+ tipo_cliente (CUIT/NOMBRE/VACIO)&lt;br&gt;+ cuit_cliente (str)&lt;br&gt;+ cliente_nombre (str)&lt;br&gt;+ duracion_segundos&lt;br&gt;+ anio / mes / semana&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#82b366;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="888" width="240" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- dim_clientes intermedio -->
+        <mxCell id="inter_dc" value="&lt;b style='font-size:10px'&gt;dim_clientes&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:9px;color:#555'&gt;46 filas (1 por CUIT único)&lt;br&gt;ID_Cliente / cuit (PK) / nombre_cliente&lt;br&gt;gerente_responsable / cuit_es_dummy&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#82b366;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="720" y="888" width="300" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- dim_relevamiento intermedio -->
+        <mxCell id="inter_dr" value="&lt;b style='font-size:10px'&gt;dim_relevamiento&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:9px;color:#555'&gt;517 filas (cliente × herramienta)&lt;br&gt;cuit / nombre_cliente / herramienta&lt;br&gt;usa_herramienta (bool) / gerente_responsable&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#82b366;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="1040" y="888" width="340" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════ -->
+        <!-- PASO 3: FACT_EJECUCIONES                                -->
+        <!-- ══════════════════════════════════════════════════════ -->
+        <mxCell id="lbl_s3" value="③ PASO 3 — Construir fact_ejecuciones"
+          style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontStyle=1;fontColor=#375623;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="1040" width="400" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="paso3_bg" value="&lt;b style='font-size:12px;color:#375623'&gt;PASO 3 — fact_ejecuciones&lt;/b&gt;&lt;br&gt;&lt;i style='font-size:9px;color:#666'&gt;core/etl/paso3_fact_ejecuciones.py&lt;/i&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;align=left;spacingLeft=8;spacingTop=6;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="1064" width="1840" height="390" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 3: mapeo proceso herramienta -->
+        <mxCell id="p3_r1" value="&lt;b style='color:#7d4b00'&gt;Regla 1 — Mapeo proceso DB_Server → herramienta canónica&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;Diccionario PROCESO_A_HERRAMIENTA (config/settings.py): 39 procesos → 26 herramientas&lt;br&gt;&lt;table style='font-size:10px;width:100%'&gt;&lt;tr&gt;&lt;td style='color:#555'&gt;&quot;GUI: Control Correlatividad&quot; / &quot;GUI: Controlar correlatividad&quot; / &quot;AFIP voucher correlativity control&quot;&lt;/td&gt;&lt;td&gt;→&lt;/td&gt;&lt;td style='color:#1F4E79'&gt;&quot;Control de correlatividad - ComplyPro&quot;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='color:#555'&gt;&quot;GUI: Identificación Duplicados&quot; / &quot;GUI: Detección de duplicados&quot; (2 variantes)&lt;/td&gt;&lt;td&gt;→&lt;/td&gt;&lt;td style='color:#1F4E79'&gt;&quot;Control de duplicados - ComplyPro&quot;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='color:#555'&gt;&quot;Tracking de Vencimientos&quot;&lt;/td&gt;&lt;td&gt;→&lt;/td&gt;&lt;td style='color:#1F4E79'&gt;&quot;Calendarios Impositivos&quot;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='color:#555'&gt;Procesos sin herramienta en Relevamiento (WP-Ganancias, Tablas Ratio, etc.)&lt;/td&gt;&lt;td&gt;→&lt;/td&gt;&lt;td style='color:#9673a6'&gt;se incluyen con nombre original · flag en_relevamiento=False&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="1114" width="880" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 3: normalizacion estados -->
+        <mxCell id="p3_r2" value="&lt;b style='color:#375623'&gt;Regla 2 — Normalización de estados&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;&lt;b style='color:green'&gt;Correcto&lt;/b&gt;: &quot;Correcto&quot;, &quot;Finalizado&quot;&lt;br&gt;&lt;b style='color:#c00'&gt;Erroneo&lt;/b&gt;: &quot;Erróneo&quot;, &quot;Proceso terminado/finalizado con errores&quot;, &quot;0&quot;&lt;br&gt;&lt;b style='color:#cc6600'&gt;Con Observaciones&lt;/b&gt;: &quot;Finalizado con observaciones&quot;, &quot;Proceso terminado/finalizado con observaciones&quot;&lt;br&gt;&lt;b style='color:#555'&gt;Correo no enviado&lt;/b&gt;: &quot;Correo no enviado&quot;&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FB;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="950" y="1114" width="480" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 3: join dim_clientes -->
+        <mxCell id="p3_r3" value="&lt;b style='color:#375623'&gt;Regla 3 — Join con dim_clientes por CUIT&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;df_db[cuit_cliente] → dim_clientes[cuit] (left join)&lt;br&gt;Trae: nombre_cliente_canonico + gerente_responsable&lt;br&gt;Si no tiene CUIT (tipo VACIO o NOMBRE sin resolución):&lt;br&gt;nombre_cliente_canonico = cliente_nombre (texto libre tal cual)&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FB;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="1450" y="1114" width="390" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 3: columnas resultado -->
+        <mxCell id="p3_result" value="&lt;b style='font-size:11px;color:#375623'&gt;Columnas resultantes de fact_ejecuciones (30.881 filas)&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;id · username · &lt;b&gt;proceso_original&lt;/b&gt; · &lt;b&gt;herramienta&lt;/b&gt; · &lt;b&gt;en_relevamiento&lt;/b&gt; (bool) · estado · &lt;b&gt;estado_normalizado&lt;/b&gt; · iniciado · finalizado · &lt;b&gt;duracion_segundos&lt;/b&gt; · tipo_cliente · cuit_cliente · &lt;b&gt;nombre_cliente_canonico&lt;/b&gt; · gerente_responsable · items_count · observaciones · anio · mes · semana&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#82b366;align=left;verticalAlign=middle;spacingLeft=8;spacingTop=4;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="1290" width="1800" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Paso 3: dim_herramientas -->
+        <mxCell id="p3_dimh" value="&lt;b style='font-size:10px'&gt;dim_herramientas generada aquí&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:9px;color:#555'&gt;26 filas · herramienta (PK) · en_relevamiento (bool)&lt;br&gt;11 en Relevamiento + 15 procesos externos&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#82b366;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="1340" width="280" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════ -->
+        <!-- SECCIÓN 4: OUTPUTS CSV                                  -->
+        <!-- ══════════════════════════════════════════════════════ -->
+        <mxCell id="lbl_s4" value="④ PASO 4 — Exportar tablas para Power BI (encoding UTF-8-sig)"
+          style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontStyle=1;fontColor=#4a235a;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="1478" width="600" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- CSV 1 -->
+        <mxCell id="csv1" value="&lt;b style='font-size:11px;color:#4a235a'&gt;📄 dim_clientes.csv&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;46 filas&lt;br&gt;ID_Cliente · &lt;b&gt;cuit (PK único)&lt;/b&gt;&lt;br&gt;nombre_cliente&lt;br&gt;gerente_responsable&lt;br&gt;cuit_es_dummy&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="1502" width="220" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- CSV 2 -->
+        <mxCell id="csv2" value="&lt;b style='font-size:11px;color:#4a235a'&gt;📄 dim_herramientas.csv&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;26 filas&lt;br&gt;&lt;b&gt;herramienta (PK único)&lt;/b&gt;&lt;br&gt;en_relevamiento (bool)&lt;br&gt;&lt;br&gt;11 en Relevamiento&lt;br&gt;15 procesos externos&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="270" y="1502" width="220" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- CSV 3 -->
+        <mxCell id="csv3" value="&lt;b style='font-size:11px;color:#4a235a'&gt;📄 dim_relevamiento.csv&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;517 filas (cliente × herramienta)&lt;br&gt;cuit · nombre_cliente&lt;br&gt;herramienta&lt;br&gt;usa_herramienta (bool)&lt;br&gt;gerente_responsable&lt;br&gt;&lt;i style='color:#888'&gt;Tabla suelta en Power BI (no relacionada)&lt;/i&gt;&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="510" y="1502" width="260" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- CSV 4 -->
+        <mxCell id="csv4" value="&lt;b style='font-size:11px;color:#4a235a'&gt;📄 fact_ejecuciones.csv&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;30.881 filas — tabla de hechos&lt;br&gt;19 columnas&lt;br&gt;&lt;b&gt;cuit_cliente (FK)&lt;/b&gt; → dim_clientes&lt;br&gt;&lt;b&gt;herramienta (FK)&lt;/b&gt; → dim_herramientas&lt;br&gt;estado_normalizado&lt;br&gt;duracion_segundos&lt;br&gt;anio / mes / semana&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="790" y="1502" width="280" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════ -->
+        <!-- SECCIÓN 5: POWER BI                                     -->
+        <!-- ══════════════════════════════════════════════════════ -->
+        <mxCell id="lbl_s5" value="⑤ POWER BI — Modelo de datos y relaciones"
+          style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontStyle=1;fontColor=#b85450;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="1668" width="400" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pbi_bg" value=""
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="1692" width="1840" height="280" as="geometry" />
+        </mxCell>
+
+        <!-- PBI: dim_clientes box -->
+        <mxCell id="pbi_dc" value="&lt;b&gt;dim_clientes&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;&lt;b style='color:#4a235a'&gt;cuit&lt;/b&gt; (PK)&lt;br&gt;nombre_cliente&lt;br&gt;gerente_responsable&lt;br&gt;cuit_es_dummy&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="200" y="1730" width="200" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- PBI: dim_herramientas box -->
+        <mxCell id="pbi_dh" value="&lt;b&gt;dim_herramientas&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;&lt;b style='color:#4a235a'&gt;herramienta&lt;/b&gt; (PK)&lt;br&gt;en_relevamiento&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="200" y="1860" width="200" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- PBI: fact_ejecuciones box -->
+        <mxCell id="pbi_fact" value="&lt;b&gt;fact_ejecuciones&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;id (PK)&lt;br&gt;&lt;b style='color:#c00'&gt;cuit_cliente (FK)&lt;/b&gt;&lt;br&gt;&lt;b style='color:#c00'&gt;herramienta (FK)&lt;/b&gt;&lt;br&gt;estado_normalizado&lt;br&gt;duracion_segundos&lt;br&gt;nombre_cliente_canonico&lt;br&gt;anio / mes / semana&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="560" y="1760" width="220" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- PBI: dim_relevamiento suelta -->
+        <mxCell id="pbi_dr" value="&lt;b&gt;dim_relevamiento&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;&lt;i style='color:#888'&gt;Tabla suelta — sin relación&lt;/i&gt;&lt;br&gt;cuit / herramienta&lt;br&gt;usa_herramienta&lt;br&gt;gerente_responsable&lt;br&gt;&lt;br&gt;Se usa para mostrar qué herramientas debería ejecutar cada cliente&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=10;dashed=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="900" y="1730" width="240" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- PBI: Relacion 1 -->
+        <mxCell id="pbi_rel1" value="&lt;b&gt;M : 1&lt;/b&gt;&lt;br&gt;Single&lt;br&gt;cuit_cliente → cuit"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;align=center;"
+          edge="1" source="pbi_fact" target="pbi_dc" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- PBI: Relacion 2 -->
+        <mxCell id="pbi_rel2" value="&lt;b&gt;M : 1&lt;/b&gt;&lt;br&gt;Single&lt;br&gt;herramienta → herramienta"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;align=center;"
+          edge="1" source="pbi_fact" target="pbi_dh" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- PBI: nota relaciones -->
+        <mxCell id="pbi_nota" value="&lt;b style='color:#b85450'&gt;⚠ Solo 2 relaciones — ambas Many-to-One, Cross-filter: Single&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;No crear relaciones hacia/desde dim_relevamiento: genera ambigüedad de rutas en Power BI&lt;br&gt;No usar Cross-filter &quot;Both&quot;: genera error en columna &quot;Gerente responsable&quot;&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=middle;spacingLeft=8;fontSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="1200" y="1770" width="630" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- PBI: futuro SQL -->
+        <mxCell id="pbi_sql" value="&lt;b style='color:#1F4E79'&gt;🔮 Migración futura a SQL&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10px'&gt;Reemplazar en paso2_db_server.py:&lt;br&gt;pd.read_excel(PATH_DB_SERVER) → pd.read_sql('SELECT * FROM monitoreo_bots', conn)&lt;br&gt;El resto del pipeline permanece idéntico&lt;/span&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=10;dashed=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="1200" y="1870" width="630" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════ -->
+        <!-- ARROWS PRINCIPALES                                      -->
+        <!-- ══════════════════════════════════════════════════════ -->
+
+        <!-- DB_Server → PASO 2 -->
+        <mxCell id="arr1" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;rounded=1;strokeColor=#6c8ebf;strokeWidth=2;"
+          edge="1" source="src_db" target="paso2_bg" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Tabla_Cuits → PASO 2 -->
+        <mxCell id="arr2" value="lookup nombre→CUIT"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=1;strokeColor=#d6b656;strokeWidth=1.5;dashed=1;fontSize=9;"
+          edge="1" source="src_cuits" target="paso2_bg" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Relevamiento → PASO 1 -->
+        <mxCell id="arr3" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=1;strokeColor=#6c8ebf;strokeWidth=2;"
+          edge="1" source="src_relev_bg" target="paso1_bg" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- PASO 2 → inter_db -->
+        <mxCell id="arr4" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=1;strokeColor=#82b366;strokeWidth=2;"
+          edge="1" source="paso2_bg" target="inter_db" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- PASO 1 → inter_dc -->
+        <mxCell id="arr5" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=1;strokeColor=#82b366;strokeWidth=2;"
+          edge="1" source="paso1_bg" target="inter_dc" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- PASO 1 → inter_dr -->
+        <mxCell id="arr6" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=1;strokeColor=#82b366;strokeWidth=2;"
+          edge="1" source="paso1_bg" target="inter_dr" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- inter_db → PASO 3 -->
+        <mxCell id="arr7" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.1;entryY=0;entryDx=0;entryDy=0;rounded=1;strokeColor=#82b366;strokeWidth=2;"
+          edge="1" source="inter_db" target="paso3_bg" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- inter_dc → PASO 3 -->
+        <mxCell id="arr8" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=1;strokeColor=#82b366;strokeWidth=2;"
+          edge="1" source="inter_dc" target="paso3_bg" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- PASO 3 → CSVs -->
+        <mxCell id="arr9" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.1;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=1;strokeColor=#9673a6;strokeWidth=2;"
+          edge="1" source="paso3_bg" target="csv1" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr10" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=1;strokeColor=#9673a6;strokeWidth=2;"
+          edge="1" source="paso3_bg" target="csv2" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr11" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.4;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=1;strokeColor=#9673a6;strokeWidth=2;"
+          edge="1" source="paso3_bg" target="csv3" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr12" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.55;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=1;strokeColor=#9673a6;strokeWidth=2;"
+          edge="1" source="paso3_bg" target="csv4" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- CSVs → Power BI -->
+        <mxCell id="arr13" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=1;strokeColor=#b85450;strokeWidth=2;"
+          edge="1" source="csv1" target="pbi_dc" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr14" value=""
+          style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=1;strokeColor=#b85450;strokeWidth=2;"
+          edge="1" source="csv4" target="pbi_fact" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
