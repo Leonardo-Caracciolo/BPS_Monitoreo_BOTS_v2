@@ -1,0 +1,55 @@
+site_name: BPS Monitoreo Bots
+site_description: Documentación del pipeline ETL para Power BI
+site_author: BPS Team
+docs_dir: docs
+
+theme:
+  name: material
+  language: es
+  palette:
+    - scheme: slate
+      primary: blue
+      accent: cyan
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - content.code.copy
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: true
+            show_root_heading: true
+            show_category_heading: true
+            docstring_style: numpy
+            merge_init_into_class: true
+
+nav:
+  - Inicio: index.md
+  - Arquitectura:
+    - Visión general: arquitectura/vision_general.md
+    - Modelo de datos: arquitectura/modelo_datos.md
+    - Flujo ETL: arquitectura/flujo_etl.md
+  - Módulos:
+    - settings.py: modulos/settings.md
+    - clean_datos.py: modulos/clean_datos.md
+    - merge_datos.py: modulos/merge_datos.md
+    - paso1_relevamiento.py: modulos/paso1_relevamiento.md
+    - paso2_db_server.py: modulos/paso2_db_server.md
+    - paso3_fact_ejecuciones.py: modulos/paso3_fact_ejecuciones.md
+    - paso4_diagnostico.py: modulos/paso4_diagnostico.md
+    - construir_esperado.py: modulos/construir_esperado.md
+    - main.py: modulos/main.md
+  - Power BI:
+    - Configuración: powerbi/configuracion.md
+    - Relaciones: powerbi/relaciones.md
+    - Medidas DAX: powerbi/medidas_dax.md
+  - Mantenimiento:
+    - Agregar clientes: mantenimiento/agregar_clientes.md
+    - Agregar procesos: mantenimiento/agregar_procesos.md
+    - Migración a SQL: mantenimiento/migracion_sql.md
