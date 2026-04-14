@@ -21,3 +21,7 @@ def clean_datos(file_path: str) -> pd.DataFrame:
     )
     print(f"  clean_datos: {len(df_server):,} filas leídas")
     return df_server
+
+
+
+#! Eliminar a nosotros como usuarios (leo, dani, etc)

@@ -37,3 +37,4 @@ cache/
 *.tmp
 ~$*.docx
 ~$*.xlsx
+~$*.xlsm

@@ -70,6 +70,9 @@ def construir_fact_ejecuciones(
     sin_nombre = df["nombre_cliente_canonico"].isna()
     df.loc[sin_nombre, "nombre_cliente_canonico"] = df.loc[sin_nombre, "cliente_nombre"]
 
+
+
+    #! en_relevamiento significa que está en el archivo de Cesar
     return df[[
         "id", "username", "proceso_original", "herramienta", "en_relevamiento",
         "estado", "estado_normalizado",
