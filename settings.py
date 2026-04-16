@@ -54,8 +54,8 @@ from pathlib import Path
 # ─── Paths ────────────────────────────────────────────────────────────────────
 ROOT = Path(__file__).resolve().parent
 
-INPUTS_DIR  = ROOT / "data" / "inputs"
-OUTPUTS_DIR = ROOT / "data" / "outputs"
+INPUTS_DIR  = Path("C:\\Users\\lecaracciolo\\OneDrive - Deloitte (O365D)\\RPA T&L - Grupo Interno - Metricas uso tecnologia (Monitoreo de Bots)\\Inputs")
+OUTPUTS_DIR = Path("C:\\Users\\lecaracciolo\\OneDrive - Deloitte (O365D)\\RPA T&L - Grupo Interno - Metricas uso tecnologia (Monitoreo de Bots)\\Outputs")
 
 PATH_DB_SERVER    = INPUTS_DIR / "DB_Server.xlsx"
 PATH_RELEVAMIENTO = INPUTS_DIR / "Relevamiento BPS_Organizado - v2.xlsm"
